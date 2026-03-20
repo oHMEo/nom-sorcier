@@ -2,19 +2,17 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de Nom de Sorcier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>L'Oracle du Nom Secret</title>
     <style>
-        /* Style de base (Neutre) */
         :root {
             --bg-color: #2c3e50;
             --container-bg: #34495e;
             --accent-color: #ecf0f1;
             --text-color: #ffffff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Styles spécifiques aux affinités */
+        /* Thèmes dynamiques */
         body.theme-lumiere {
             --bg-color: #f0f4f8;
             --container-bg: #ffffff;
@@ -29,16 +27,36 @@
             --text-color: #bdc3c7;
         }
 
+        /* Mise en page */
         body { 
             background-color: var(--bg-color); 
             color: var(--text-color); 
             font-family: 'Segoe UI', serif; 
-            transition: all 0.5s ease; 
+            transition: all 0.8s ease; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
             margin: 0; 
+            overflow: hidden;
+        }
+
+        /* Barre d'inactivité */
+        #idle-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+        }
+
+        #idle-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--accent-color);
+            transition: width 0.1s linear;
         }
 
         .container { 
@@ -47,19 +65,22 @@
             background: var(--container-bg); 
             padding: 30px; 
             border-radius: 20px; 
-            box-shadow: var(--shadow); 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
             text-align: center;
+            z-index: 10;
+            position: relative;
         }
+
+        h2 { margin-top: 0; font-size: 1.6rem; }
 
         select, button { 
             width: 100%; 
-            padding: 12px; 
-            margin: 15px 0; 
-            border-radius: 8px; 
+            padding: 14px; 
+            margin: 12px 0; 
+            border-radius: 10px; 
             border: 1px solid #7f8c8d; 
-            font-size: 1rem;
-            background: #fff;
-            color: #333;
+            font-size: 1.1rem;
+            outline: none;
         }
 
         button { 
@@ -69,100 +90,192 @@
             cursor: pointer; 
             font-weight: bold; 
             text-transform: uppercase;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
         }
 
-        #resultat { 
-    	margin-top: 25px; 
-	    min-height: 80px; 
-	    transition: all 0.3s ease;
-	}
+        button:active { transform: translateY(2px); box-shadow: none; }
 
-	#resultat span { 
-	    display: block;
-	    font-size: 2.5rem; /* Nom beaucoup plus gros */
-	    font-family: 'Georgia', 'Times New Roman', serif; /* Style "Vieux Grimoire" */
-	    font-variant: small-caps;
-	    letter-spacing: 2px;
-	    font-weight: bold;
-	    margin-top: 10px;
-	    color: var(--accent-color);
-	}
+        /* Animation de Scintillement */
+        #loader-container {
+            display: none;
+            height: 80px;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: fly 1.2s infinite ease-out;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0,0) scale(1.5); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+
+        /* Résultat final */
+        #resultat { margin-top: 15px; min-height: 100px; }
+
+        #nom-final span { 
+            display: block;
+            font-size: 2.6rem; 
+            font-family: 'Georgia', serif; 
+            font-variant: small-caps;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-top: 10px;
+            animation: reveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes reveal { 
+            from { opacity: 0; transform: scale(0.8); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
     </style>
 </head>
 <body id="mainBody">
+
+    <div id="idle-bar-container"><div id="idle-bar"></div></div>
+
     <div class="container">
         <h2 id="titre">✨ Forge d'Identité ✨</h2>
         
-        <label>Quelle est votre essence ?</label>
-        <select id="affinite" onchange="changerStyle()" autocomplete="off">
-            <option value="" selected disabled>— ? —</option>
+        <label>Votre Essence :</label>
+        <select id="affinite" onchange="changerStyle()">
+            <option value="" selected disabled>— Choisir une Voie —</option>
             <option value="lumiere">Lumière Solaire ✨</option>
             <option value="ombre">Ombre Profonde 🌑</option>
         </select>
 
-        <label>Quel est votre genre ?</label>
-        <select id="genre" autocomplete="off">
-			<option value="" selected disabled>— ? —</option>
+        <label>Votre Nature :</label>
+        <select id="genre">
+            <option value="" selected disabled>— Choisir un Genre —</option>
             <option value="M">Masculin</option>
             <option value="F">Féminin</option>
-			<option value="Autre">Sans préférence</option>
-            <option value="Autre">Autre</option>
+            <option value="Autre">Neutre / Ancien</option>
         </select>
 
-        <button onclick="genererNom()">Révéler mon nom</button>
+        <button onclick="genererNom()">Invoquer mon Nom</button>
 
-        <div id="resultat"></div>
+        <div id="resultat">
+            <div id="loader-container"></div>
+            <div id="nom-final"></div>
+        </div>
     </div>
-	<script src="noms.js"></script>
-    <script>
-        window.onload = function() {
-        document.getElementById('affinite').selectedIndex = 0;
-        document.getElementById('genre').selectedIndex = 0;
-        changerStyle(); 
-    	};
 
+    <script>
+        // BASE DE DONNÉES DE 300 NOMS
+        const baseDeNoms = {
+            lumiere: {
+                M: ["Aethelvorn", "Almiren", "Berythan", "Caelidore", "Dovarian", "Elthion", "Faolun", "Gildoran", "Hestivon", "Iolaris", "Jovareth", "Kaelmist", "Luvion", "Merythold", "Naluviel", "Oriastel", "Phaedron", "Quilvorn", "Rhaegast", "Solunid", "Thalivius", "Urianist", "Valestor", "Wystorn", "Xalthios", "Yorathun", "Zephirant", "Aureliskan", "Belonist", "Castuvier", "Darionet", "Esmaldir", "Florivon", "Galunthas", "Hadrienist", "Isidorn", "Jalior", "Kironist", "Leandris", "Maelorist", "Nathiosk", "Oberonist", "Pelleast", "Quintorin", "Rohanist", "Silarist", "Tybaltian", "Ulrist", "Varianis", "Zoranith"],
+                F: ["Aurellis", "Beryllia", "Caelista", "Dahlianne", "Elownys", "Faeryne", "Gildara", "Hestiala", "Iolanthe", "Junalis", "Kyralis", "Luminelle", "Maelisora", "Nalianne", "Orianelle", "Phaedris", "Quillara", "Rhiannys", "Soleneira", "Thalisky", "Uriellys", "Valerys", "Wystara", "Xantheline", "Yelenis", "Zephirane", "Althaelle", "Belisora", "Cassiane", "Dorianne", "Esmeira", "Florienne", "Galanthelle", "Hadrielle", "Isadorae", "Jaliella", "Korranis", "Leandriska", "Maelyssa", "Nathielle", "Obeline", "Pellina", "Quintelle", "Rohanelle", "Silisky", "Tybelia", "Ulricelle", "Variane", "Zoranelle", "Lioris"],
+                Autre: ["Aethonne", "Berylis", "Caelumis", "Dorisko", "Elarin", "Faelis", "Gildaris", "Hesperis", "Icaris", "Jovisk", "Kaelin", "Luminin", "Merylis", "Nalis", "Orianis", "Phaedis", "Quillis", "Rhaegis", "Solenis", "Thalis", "Urielis", "Valeris", "Wystis", "Xanthis", "Yorathis", "Zephyris", "Aurelis", "Belenis", "Castis", "Daris", "Esmonis", "Floris", "Galanis", "Hadris", "Isidis", "Jaliis", "Kiris", "Leanis", "Maelis", "Nathis", "Oberis", "Pellis", "Quinis", "Rohanis", "Silis", "Tybalis", "Ulris", "Varis", "Zoris", "Eclis"]
+            },
+            ombre: {
+                M: ["Arvorth", "Blakmorn", "Corvuk", "Drakonist", "Erebon", "Falkonir", "Gorthak", "Hekost", "Ithalis", "Jorthun", "Kromid", "Lethosk", "Morgonith", "Nyxorn", "Orlokist", "Phobonis", "Quaroth", "Rhadam", "Skotoni", "Tenabris", "Ulgorath", "Varkas", "Woldan", "Xul", "Ygor", "Zalthar", "Abysson", "Banevorn", "Cthonis", "Drev", "Enyo", "Fenris", "Grendal", "Hadesis", "Invidis", "Jormun", "Karn", "Loki", "Malus", "Nox", "Ossuar", "Pyre", "Quis", "Reven", "Sanguis", "Tartar", "Umbrus", "Vex", "Wraith", "Zol"],
+                F: ["Arvortha", "Blakma", "Corvura", "Drakonis", "Ereba", "Falkia", "Gorthia", "Hekara", "Ithala", "Jorthia", "Kromia", "Lethia", "Morgothia", "Nyxia", "Orlokelle", "Phobina", "Quarothis", "Rhadama", "Skotina", "Tenabrisia", "Ulgorelle", "Varkia", "Woldia", "Xulalla", "Ygora", "Zalthia", "Abyssa", "Banea", "Cthona", "Dreva", "Enyora", "Fenra", "Grendala", "Hadesa", "Invidia", "Jormuna", "Karnelle", "Lokiana", "Malise", "Noxelle", "Ossuara", "Pyra", "Quisa", "Revena", "Sanguia", "Tartara", "Umbrina", "Vexia", "Wraithia", "Zolane"],
+                Autre: ["Arv", "Blak", "Corv", "Drak", "Ere", "Falk", "Gorth", "Hek", "Ithal", "Jort", "Kro", "Leth", "Morgo", "Nyx", "Orlo", "Phob", "Quar", "Rhada", "Skot", "Tene", "Ulg", "Vark", "Wol", "Xul", "Ygo", "Zalt", "Aby", "Ban", "Ctho", "Dre", "Eny", "Fen", "Gren", "Had", "Inv", "Jor", "Kar", "Lok", "Mal", "Nox", "Oss", "Pyr", "Qui", "Rev", "San", "Tar", "Umb", "Vex", "Wra", "Zol", "Kael"]
+            }
+        };
+
+        // GESTION DU STYLE
         function changerStyle() {
             const affinite = document.getElementById('affinite').value;
             const body = document.getElementById('mainBody');
             const titre = document.getElementById('titre');
-
-            // Reset des classes
-            body.classList.remove('theme-lumiere', 'theme-ombre');
-
-            if (affinite === 'lumiere') {
-                body.classList.add('theme-lumiere');
-                titre.innerText = "✨ Disciple de la Lumière ✨";
-            } else if (affinite === 'ombre') {
-                body.classList.add('theme-ombre');
-                titre.innerText = "🌑 Adepte des Ombres 🌑";
+            body.className = affinite ? 'theme-' + affinite : '';
+            if(affinite) {
+                titre.innerText = affinite === 'lumiere' ? "✨ Disciple de la Lumière ✨" : "🌑 Adepte des Ombres 🌑";
+            } else {
+                titre.innerText = "✨ Forge d'Identité ✨";
             }
         }
 
+        // ANIMATION DE PARTICULES
+        function createSparkles() {
+            const container = document.getElementById('loader-container');
+            container.innerHTML = '';
+            for(let i=0; i<35; i++) {
+                const s = document.createElement('div');
+                s.className = 'sparkle';
+                s.style.setProperty('--x', (Math.random()*240 - 120) + 'px');
+                s.style.setProperty('--y', (Math.random()*240 - 120) + 'px');
+                s.style.animationDelay = (Math.random()*0.8) + 's';
+                container.appendChild(s);
+            }
+        }
+
+        // GÉNÉRATION DU NOM
         function genererNom() {
             const affinite = document.getElementById('affinite').value;
             const genre = document.getElementById('genre').value;
-            const resDiv = document.getElementById('resultat');
+            const loader = document.getElementById('loader-container');
+            const nomDiv = document.getElementById('nom-final');
 
-
-
-            if (!affinite) {
-                resDiv.innerHTML = "<small style='color:red'>Veuillez choisir une essence d'abord.</small>";
+            if (!affinite || !genre) {
+                alert("Veuillez choisir votre Essence et votre Nature.");
                 return;
             }
-			
-			if (!genre) {
-                resDiv.innerHTML = "<small style='color:red'>Veuillez choisir un genre d'abord.</small>";
-                return;
-            }
-            
-			console.log(affinite);
-console.log(genre);
-			
-            const liste = baseDeNoms[affinite][genre];
-            const nomAleatoire = liste[Math.floor(Math.random() * liste.length)];
-            
-            resDiv.innerHTML = `Votre nom de sorcier est...<br><span>${nomAleatoire}</span>`;
+
+            nomDiv.innerHTML = '';
+            loader.style.display = 'flex';
+            createSparkles();
+
+            setTimeout(() => {
+                loader.style.display = 'none';
+                const liste = baseDeNoms[affinite][genre];
+                const nom = liste[Math.floor(Math.random() * liste.length)];
+                nomDiv.innerHTML = `L'Oracle a parlé...<br><span>${nom}</span>`;
+            }, 2000);
         }
+
+        // SYSTÈME D'INACTIVITÉ (30s)
+        let tempsRestant = 30;
+        let timerInterval;
+        const barre = document.getElementById('idle-bar');
+
+        function reinitialiserApp() {
+            document.getElementById('affinite').selectedIndex = 0;
+            document.getElementById('genre').selectedIndex = 0;
+            document.getElementById('nom-final').innerHTML = '';
+            document.getElementById('loader-container').style.display = 'none';
+            changerStyle();
+            relancerTimer();
+        }
+
+        function mettreAJourBarre() {
+            tempsRestant -= 0.1;
+            const pourcentage = (tempsRestant / 30) * 100;
+            barre.style.width = pourcentage + "%";
+
+            if (tempsRestant <= 0) {
+                clearInterval(timerInterval);
+                reinitialiserApp();
+            }
+        }
+
+        function relancerTimer() {
+            clearInterval(timerInterval);
+            tempsRestant = 30;
+            barre.style.width = "100%";
+            timerInterval = setInterval(mettreAJourBarre, 100);
+        }
+
+        // Détection d'activité
+        window.addEventListener('mousedown', relancerTimer);
+        window.addEventListener('touchstart', relancerTimer);
+        window.addEventListener('change', relancerTimer);
+
+        window.onload = () => {
+            relancerTimer();
+        };
     </script>
 </body>
 </html>
