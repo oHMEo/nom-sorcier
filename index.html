@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Nom de Sorcier</title>
+    <style>
+        /* Style de base (Neutre) */
+        :root {
+            --bg-color: #2c3e50;
+            --container-bg: #34495e;
+            --accent-color: #ecf0f1;
+            --text-color: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Styles spécifiques aux affinités */
+        body.theme-lumiere {
+            --bg-color: #f0f4f8;
+            --container-bg: #ffffff;
+            --accent-color: #f1c40f;
+            --text-color: #2c3e50;
+        }
+
+        body.theme-ombre {
+            --bg-color: #050505;
+            --container-bg: #1a1a1a;
+            --accent-color: #9b59b6;
+            --text-color: #bdc3c7;
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: 'Segoe UI', serif; 
+            transition: all 0.5s ease; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        .container { 
+            width: 90%; 
+            max-width: 400px; 
+            background: var(--container-bg); 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow); 
+            text-align: center;
+        }
+
+        select, button { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 15px 0; 
+            border-radius: 8px; 
+            border: 1px solid #7f8c8d; 
+            font-size: 1rem;
+            background: #fff;
+            color: #333;
+        }
+
+        button { 
+            background-color: var(--accent-color); 
+            color: #000; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
+            text-transform: uppercase;
+        }
+
+        #resultat { 
+            margin-top: 25px; 
+            font-size: 1.4rem; 
+            font-weight: bold; 
+            min-height: 60px; 
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body id="mainBody">
+    <div class="container">
+        <h2 id="titre">✨ Forge d'Identité ✨</h2>
+        
+        <label>Quelle est votre essence ?</label>
+        <select id="affinite" onchange="changerStyle()" autocomplete="off">
+            <option value="" selected disabled>— ? —</option>
+            <option value="lumiere">Lumière Solaire ✨</option>
+            <option value="ombre">Ombre Profonde 🌑</option>
+        </select>
+
+        <label>Quel est votre genre ?</label>
+        <select id="genre" autocomplete="off">
+			<option value="" selected disabled>— ? —</option>
+            <option value="M">Masculin</option>
+            <option value="F">Féminin</option>
+			<option value="Autre">Sans préférence</option>
+            <option value="Autre">Autre</option>
+        </select>
+
+        <button onclick="genererNom()">Révéler mon nom</button>
+
+        <div id="resultat"></div>
+    </div>
+
+    <script>
+        const baseDeNoms = {
+            lumiere: {
+                M: ["Aethelred", "Lucidus", "Soliman", "Hyperion", "Balthazar", "Helios", "Valerius", "Caelum", "Elario", "Phébus"],
+                F: ["Auriana", "Lumina", "Séréna", "Elowen", "Galadriel", "Thalassa", "Celestia", "Astrid", "Vesta", "Lyra"],
+                Autre: ["Lux", "Zénith", "Aether", "Horizon", "Solaris", "Prisme", "Nimbus", "Eclat", "Albedo", "Phaéton"]
+            },
+            ombre: {
+                M: ["Mortifer", "Malakor", "Obsidien", "Thanatos", "Erebus", "Vorgoth", "Drakar", "Noctis", "Sauron", "Abaddon"],
+                F: ["Morgana", "Hécate", "Nyx", "Vespera", "Lilith", "Belladona", "Séléné", "Lamia", "Morwenna", "Pandora"],
+                Autre: ["Umbra", "Éclipse", "Abysse", "Styx", "Void", "Kael", "Obsidius", "Chaos", "Sépia"]
+            }
+        };
+
+        function changerStyle() {
+            const affinite = document.getElementById('affinite').value;
+            const body = document.getElementById('mainBody');
+            const titre = document.getElementById('titre');
+
+            // Reset des classes
+            body.classList.remove('theme-lumiere', 'theme-ombre');
+
+            if (affinite === 'lumiere') {
+                body.classList.add('theme-lumiere');
+                titre.innerText = "✨ Disciple de la Lumière ✨";
+            } else if (affinite === 'ombre') {
+                body.classList.add('theme-ombre');
+                titre.innerText = "🌑 Adepte des Ombres 🌑";
+            }
+        }
+
+        function genererNom() {
+            const affinite = document.getElementById('affinite').value;
+            const genre = document.getElementById('genre').value;
+            const resDiv = document.getElementById('resultat');
+
+
+
+            if (!affinite) {
+                resDiv.innerHTML = "<small style='color:red'>Veuillez choisir une essence d'abord.</small>";
+                return;
+            }
+			
+			if (!genre) {
+                resDiv.innerHTML = "<small style='color:red'>Veuillez choisir un genre d'abord.</small>";
+                return;
+            }
+            
+			console.log(affinite);
+console.log(genre);
+			
+            const liste = baseDeNoms[affinite][genre];
+            const nomAleatoire = liste[Math.floor(Math.random() * liste.length)];
+            
+            resDiv.innerHTML = `Votre nom sorcier est...<br><span>${nomAleatoire}</span>`;
+        }
+    </script>
+</body>
+</html>
