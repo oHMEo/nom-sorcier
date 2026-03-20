@@ -71,7 +71,7 @@
             position: relative;
         }
 
-        h2 { margin-top: 0; font-size: 1.6rem; }
+        h2 { margin-top: 0; font-size: 1.6rem; text-wrap: nowrap}
 
         select, button { 
             width: 100%; 
@@ -147,19 +147,20 @@
     <div class="container">
         <h2 id="titre">✨ Forge d'Identité ✨</h2>
         
-        <label>Votre Essence :</label>
+        <label>Votre Affinité :</label>
         <select id="affinite" onchange="changerStyle()">
-            <option value="" selected disabled>— Choisir une Voie —</option>
-            <option value="lumiere">Lumière Solaire ✨</option>
-            <option value="ombre">Ombre Profonde 🌑</option>
+            <option value="" selected disabled>— Choisir une affinité —</option>
+            <option value="lumiere">Lumière ✨</option>
+            <option value="ombre">Obscurité 🌑</option>
         </select>
 
-        <label>Votre Nature :</label>
-        <select id="genre">
-            <option value="" selected disabled>— Choisir un Genre —</option>
+        <label>Votre Genre :</label>
+        <select id="genre" onchange="resetName()">
+            <option value="" selected disabled>— Choisir un genre —</option>
             <option value="M">Masculin</option>
             <option value="F">Féminin</option>
-            <option value="Autre">Neutre / Ancien</option>
+            <option value="Autre">Autre</option>
+            <option value="Autre">Aucun</option>
         </select>
 
         <button onclick="genererNom()">Invoquer mon Nom</button>
@@ -226,14 +227,21 @@
             const affinite = document.getElementById('affinite').value;
             const body = document.getElementById('mainBody');
             const titre = document.getElementById('titre');
+            const nomDiv = document.getElementById('nom-final');
             body.className = affinite ? 'theme-' + affinite : '';
             if(affinite) {
                 titre.innerText = affinite === 'lumiere' ? "✨ Disciple de la Lumière ✨" : "🌑 Adepte des Ombres 🌑";
             } else {
                 titre.innerText = "✨ Forge d'Identité ✨";
             }
+            nomDiv.innerHTML = "";
         }
 
+        function resetName() {
+            const nomDiv = document.getElementById('nom-final');
+            nomDiv.innerHTML = "";
+        }
+    
         // ANIMATION DE PARTICULES
         function createSparkles() {
             const container = document.getElementById('loader-container');
@@ -256,7 +264,7 @@
             const nomDiv = document.getElementById('nom-final');
 
             if (!affinite || !genre) {
-                alert("Veuillez choisir votre Essence et votre Nature.");
+                nomDiv.innerHTML = "<small style='color:red'>Choisissez une affinité et un genre.</small>";
                 return;
             }
 
@@ -268,7 +276,7 @@
                 loader.style.display = 'none';
                 const liste = baseDeNoms[affinite][genre];
                 const nom = liste[Math.floor(Math.random() * liste.length)];
-                nomDiv.innerHTML = `L'Oracle a parlé...<br><span>${nom}</span>`;
+                nomDiv.innerHTML = `Bienvenue à toi...<br><span>${nom}</span>`;
             }, 2000);
         }
 
