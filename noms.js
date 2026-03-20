@@ -19,7 +19,7 @@ const baseDeNoms = {
             "Kaelin", "Luminis", "Merylis", "Nalis", "Orianis", "Phaedis", "Quillis", "Rhaegis", "Solenis", "Thalis",
             "Urielis", "Valeris", "Wystis", "Xanthis", "Yorathis", "Zephyris", "Aurelis", "Belenis", "Castis", "Daris",
             "Esmonis", "Floris", "Galanis", "Hadris", "Isidis", "Jaliis", "Kiris", "Leanis", "Maelis", "Nathis",
-            "Oberis", "Pellis", "Quinis", "Rohanis", "Silis", "Tybalis", "Ulris", "Varis", "Zoris", "Eclis"
+            "Oberis", "Pellis", "Quinis", "Rohanis", "Silis", "Tybalis", "Ulris", "Voris", "Zaris", "Eclis"
         ]
     },
     ombre: {
@@ -38,11 +38,11 @@ const baseDeNoms = {
             "Ossuara", "Pyra", "Quisa", "Revena", "Sanguia", "Tartara", "Umbrina", "Vexia", "Wraithia", "Zolane"
         ],
         Autre: [
-            "Arv", "Blak", "Corv", "Drak", "Ere", "Falk", "Gorth", "Hek", "Ithal", "Jort",
-            "Kro", "Leth", "Morgo", "Nyx", "Orlo", "Phob", "Quar", "Rhada", "Skot", "Tene",
-            "Ulg", "Vark", "Wol", "Xul", "Ygo", "Zalt", "Aby", "Ban", "Ctho", "Dre",
-            "Eny", "Fen", "Gren", "Had", "Inv", "Jor", "Kar", "Lok", "Mal", "Nox",
-            "Oss", "Pyr", "Qui", "Rev", "San", "Tar", "Umb", "Vex", "Wra", "Zol", "Kael"
+            "Arvy", "Blek", "Corv", "Drak", "Eren", "Falk", "Gorth", "Hek", "Ithal", "Jort",
+            "Kroz", "Leth", "Morgo", "Nyx", "Orlo", "Phob", "Quar", "Rhada", "Skot", "Tene",
+            "Ulg", "Vark", "Wol", "Xul", "Ygo", "Zalt", "Aby", "Bâhn", "Ctho", "Dreï",
+            "Eny", "Fen", "Gren", "Had", "Invö", "Jor", "Kar", "Lok", "Mol", "Nox",
+            "Oss", "Pyr", "Qüys", "Rehv", "Sana", "Tar", "Umb", "Vex", "Wra", "Zol", "Kael"
         ]
     }
 };
