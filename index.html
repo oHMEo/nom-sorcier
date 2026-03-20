@@ -272,8 +272,8 @@
             }, 2000);
         }
 
-        // SYSTÈME D'INACTIVITÉ (30s)
-        let tempsRestant = 30;
+        // SYSTÈME D'INACTIVITÉ
+        let tempsRestant = 60;
         let timerInterval;
         const barre = document.getElementById('idle-bar');
 
@@ -288,7 +288,7 @@
 
         function mettreAJourBarre() {
             tempsRestant -= 0.1;
-            const pourcentage = (tempsRestant / 30) * 100;
+            const pourcentage = (tempsRestant / 60) * 100;
             barre.style.width = pourcentage + "%";
 
             if (tempsRestant <= 0) {
@@ -299,7 +299,7 @@
 
         function relancerTimer() {
             clearInterval(timerInterval);
-            tempsRestant = 30;
+            tempsRestant = 60;
             barre.style.width = "100%";
             timerInterval = setInterval(mettreAJourBarre, 100);
         }
