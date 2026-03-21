@@ -267,13 +267,25 @@
                 nomDiv.innerHTML = "<small style='color:red'>Choisissez une affinité et un genre.</small>";
                 return;
             }
-
+			// --- GESTION DES SONS SELON L'AFFINITÉ ---
+            let magieSon;
+            if (affinite === "ombre") {
+                magieSon = new Audio('dark.mp3');
+            } else if (affinite === "lumiere") {
+                magieSon = new Audio('light.mp3');
+            }
+            
+            if (magieSon) {
+                magieSon.play();
+            }
+            // -----------------------------------------
             nomDiv.innerHTML = '';
             loader.style.display = 'flex';
             createSparkles();
 
             setTimeout(() => {
                 loader.style.display = 'none';
+				
                 const liste = baseDeNoms[affinite][genre];
                 const nom = liste[Math.floor(Math.random() * liste.length)];
                 nomDiv.innerHTML = `Bienvenue à toi...<br><span>${nom}</span>`;
